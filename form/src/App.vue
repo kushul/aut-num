@@ -2,21 +2,24 @@
   <v-app>
     <Header />
     <v-main>
-      <HelloWorld />
+      <AutNumForm />
     </v-main>
+    <Footer />
   </v-app>
 </template>
 
 <script>
 import Header from "./components/shared/Header";
-import HelloWorld from "./components/HelloWorld";
+import Footer from "./components/shared/Footer";
+import AutNumForm from "./components/AutNumForm";
 
 export default {
   name: "App",
 
   components: {
     Header,
-    HelloWorld
+    AutNumForm,
+    Footer
   },
 
   data: () => ({
