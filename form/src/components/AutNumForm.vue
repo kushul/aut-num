@@ -249,7 +249,7 @@
             <v-col cols="12" sm="2"></v-col>
             <v-col class="d-flex" cols="12" sm="4">
               <v-text-field
-                v-model="formVal.export.annonce"
+                v-model="formVal.import.annonce"
                 dense
                 prefix="annonce"
                 :rules="[rules.required]"
@@ -791,12 +791,12 @@ export default {
     validate() {
       if (this.$refs.form.validate()) {
         this.formVal.aut_num = "AS" + this.aut_num;
-        this.responseDialog = true;
         this.formVal.as_name = this.as_name_reserved + this.as_nameVal;
         this.formVal.mnt_lower = this.mnt_reserved + this.mnt_lowerVal;
         this.formVal.mnt_by = this.mnt_by_reserved + this.mnt_byVal;
         this.formVal.status = this.statusComputed;
         this.formVal.changed = this.changedEmail + " " + this.formatDate;
+        this.responseDialog = true;
         console.log(this.formVal);
       }
     },
