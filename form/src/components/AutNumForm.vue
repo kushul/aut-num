@@ -35,6 +35,8 @@
 
           <v-text-field v-model="formVal.notify" :rules="[rules.notify]" label="Notify" required></v-text-field>
 
+          <v-text-field v-model="formVal.memberof" :rules="[rules.memberof]" label="Member of"></v-text-field>
+
           <v-text-field v-model="formVal.remarks" :rules="[rules.remarks]" label="Remarks"></v-text-field>
 
           <v-text-field v-model="formVal.org" :rules="[rules.org]" label="ORG"></v-text-field>
@@ -180,6 +182,7 @@ export default {
     formVal: {
       aut_num: "",
       descr: "",
+      memberof: "",
       as_name: "",
       mnt_lower: "",
       mnt_by: "",
@@ -235,6 +238,13 @@ export default {
         return (
           pattern.test(v) ||
           "From 2 to 4 characters optionally followed by up to 5 digits(First digit must not be 0) and starts with - followed by source name up to 9-character length."
+        );
+      },
+      memberof: v => {
+        const pattern = /^as-[a-zA-Z]+[a-zA-Z0-9-_\s*:\s*\w*]+[a-zA-Z\d]$/;
+        return (
+          pattern.test(v) ||
+          "Start with as-, made up of letters, digits, the character '-', and the character '_', the last character of a name must be a letter or a digit, can also be seperated by colons"
         );
       }
     }
