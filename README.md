@@ -2,12 +2,16 @@
 Create an AUT-NUM form for AFRINIC
 
 # GIT
+```
 git checkout develop
+```
 
 # SETUP VUE
+```
 cd aut-num/form
 npm install
 npm run serve
+```
 # VUE is now running on http://localhost:8080/
 
 
@@ -16,6 +20,10 @@ npm run serve
 - Used regex for validations
 - Fully Accessible (Can used keyboard only to fill up the form)
 - Darkmode
+- error messages
+- button disable if validation is not good.
+- reset form button
+- reset validation button
 
 ## Our backend developer just needs to know what is the data structure that you will provide when you call his API, he will do the rest.
 After submitting the form, you will see a success dialog box. check the object on your the console before you click button 'continue' or check formVal data in Vue extension that will be sent to the backend developer.
@@ -111,7 +119,7 @@ data structure:
 
 I spent around ~ 5 hours (need to understand routing policy first and also perform complex regex)
 
-# Furthur improvement
+# further improvement
 - Could be fully responsive
 - UI can be improved
 - more validations fore mt-routes, mp_export, export etc...
