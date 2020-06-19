@@ -125,6 +125,37 @@
             </v-col>
           </v-row>
 
+          <v-row>
+            <v-col cols="12" sm="8">
+              <v-text-field v-model="changedEmail" :rules="[rules.notify]" label="Changed"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-dialog
+                ref="dialog"
+                v-model="modal"
+                :return-value.sync="date"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="Picker in dialog"
+                    prepend-icon="event"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                  <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
+
           <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Validate</v-btn>
 
           <v-btn color="error" class="mr-4" @click="reset">Reset Form</v-btn>
@@ -140,6 +171,9 @@
 export default {
   data: () => ({
     valid: true,
+    date: new Date().toISOString().substr(0, 10),
+    changedEmail: "",
+    modal: false,
     aut_num: "",
     statusVal: "",
     statusIndex: "",
@@ -206,21 +240,30 @@ export default {
     }
   }),
 
-  statusComputed() {
-    let index = this.statusIndex;
-    let statusVal = this.statusVal;
-    switch (index) {
-      case 0:
-        statusVal = "o ASSIGNED";
-        break;
-      case 1:
-        statusVal = "o ASSIGNED-ANYCAST";
-        break;
-      case 2:
-        statusVal = "o POLICY-RESERVED";
-        break;
+  computed: {
+    formatDate() {
+      var formatDate = new Date(this.date);
+      var y = formatDate.getFullYear();
+      var m = formatDate.getMonth() + 1;
+      var d = formatDate.getDate();
+      return "" + y + (m < 10 ? "0" : "") + m + (d < 10 ? "0" : "") + d;
+    },
+    statusComputed() {
+      let index = this.statusIndex;
+      let statusVal = this.statusVal;
+      switch (index) {
+        case 0:
+          statusVal = "o ASSIGNED";
+          break;
+        case 1:
+          statusVal = "o ASSIGNED-ANYCAST";
+          break;
+        case 2:
+          statusVal = "o POLICY-RESERVED";
+          break;
+      }
+      return statusVal;
     }
-    return statusVal;
   },
 
   methods: {
@@ -229,6 +272,7 @@ export default {
       this.formVal.as_name = this.as_name_reserved + this.as_nameVal;
       this.formVal.mnt_lower = this.mnt_reserved + this.mnt_lowerVal;
       this.formVal.mnt_by = this.mnt_by_reserved + this.mnt_byVal;
+      this.formVal.changed = this.changedEmail + " " + this.formatDate;
       this.$refs.form.validate();
     },
     reset() {
