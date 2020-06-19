@@ -59,13 +59,122 @@
             </v-col>
           </v-row>
 
-          <v-text-field v-model="formVal.notify" :rules="[rules.notify]" label="Notify" required></v-text-field>
+          <v-row>
+            <v-col sm="6" cols="12">
+              <v-text-field v-model="formVal.memberof" :rules="[rules.memberof]" label="Member of"></v-text-field>
+            </v-col>
+            <v-col sm="6" cols="12">
+              <v-text-field
+                v-model="formVal.notify"
+                :rules="[rules.notify]"
+                label="Notify"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-          <v-text-field v-model="formVal.memberof" :rules="[rules.memberof]" label="Member of"></v-text-field>
+          <v-row>
+            <v-col sm="6" cols="12">
+              <v-text-field v-model="formVal.remarks" :rules="[rules.remarks]" label="Remarks"></v-text-field>
+            </v-col>
+            <v-col sm="6" cols="12">
+              <v-text-field v-model="formVal.org" :rules="[rules.org]" label="ORG"></v-text-field>
+            </v-col>
+          </v-row>
 
-          <v-text-field v-model="formVal.remarks" :rules="[rules.remarks]" label="Remarks"></v-text-field>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="formVal.admin_c"
+                :rules="[rules.required, rules.tech_c]"
+                label="admin-c"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="formVal.tech_c"
+                :rules="[rules.required, rules.tech_c]"
+                label="tech-c"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-          <v-text-field v-model="formVal.org" :rules="[rules.org]" label="ORG"></v-text-field>
+          <v-row>
+            <v-col class="d-flex" cols="12" sm="3">
+              <v-select
+                small-chips
+                :items="reserved_words"
+                v-model="mnt_reserved"
+                label="Reserved Names"
+                :error="false"
+              ></v-select>
+            </v-col>
+            <v-col class="d-flex" cols="12" sm="9">
+              <v-text-field v-model="mnt_lowerVal" :rules="[rules.mnt_lower]" label="mnt-lower"></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-text-field
+            v-model="formVal.mnt_irt"
+            :rules="[rules.required, rules.mnt_irt]"
+            label="mnt-irt"
+            required
+          ></v-text-field>
+
+          <v-row>
+            <v-col class="d-flex" cols="12" sm="3">
+              <v-select
+                small-chips
+                :items="reserved_words"
+                v-model="mnt_by_reserved"
+                :rules="[rules.required]"
+                label="Reserved Names"
+                required
+              ></v-select>
+            </v-col>
+            <v-col class="d-flex" cols="12" sm="9">
+              <v-text-field
+                v-model="mnt_byVal"
+                :rules="[rules.required,rules.mnt_lower]"
+                label="mnt-by"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col class="d-flex" cols="12" sm="2">
+              <v-subheader>changed</v-subheader>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field v-model="changedEmail" :rules="[rules.notify]" label="Email"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-dialog
+                ref="dialog"
+                v-model="modal"
+                :return-value.sync="date"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="Picker in dialog"
+                    prepend-icon="event"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                  <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
 
           <v-row>
             <v-col cols="12" sm="2">
@@ -239,6 +348,17 @@
                 >
                   <v-icon dark>mdi-plus</v-icon>
                 </v-btn>
+                <v-btn
+                  @click="delete_mp_ImportPeering(index)"
+                  v-if="index > 0"
+                  class="mx-2"
+                  small
+                  fab
+                  dark
+                  color="red"
+                >
+                  <v-icon dark>delete</v-icon>
+                </v-btn>
               </v-col>
             </template>
             <v-col cols="12" sm="2"></v-col>
@@ -308,6 +428,17 @@
                 >
                   <v-icon dark>mdi-plus</v-icon>
                 </v-btn>
+                <v-btn
+                  @click="delete_mp_ExportPeering(index)"
+                  v-if="index > 0"
+                  class="mx-2"
+                  small
+                  fab
+                  dark
+                  color="red"
+                >
+                  <v-icon dark>delete</v-icon>
+                </v-btn>
               </v-col>
             </template>
             <v-col cols="12" sm="2"></v-col>
@@ -318,46 +449,6 @@
                 prefix="filter"
                 :rules="[rules.required]"
               ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12" sm="6">
-              <v-text-field
-                v-model="formVal.admin_c"
-                :rules="[rules.required, rules.tech_c]"
-                label="admin-c"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6">
-              <v-text-field
-                v-model="formVal.tech_c"
-                :rules="[rules.required, rules.tech_c]"
-                label="tech-c"
-                required
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-text-field
-            v-model="formVal.mnt_irt"
-            :rules="[rules.required, rules.mnt_irt]"
-            label="mnt-irt"
-            required
-          ></v-text-field>
-
-          <v-row>
-            <v-col class="d-flex" cols="12" sm="3">
-              <v-select
-                small-chips
-                :items="reserved_words"
-                v-model="mnt_reserved"
-                label="Reserved Names"
-                :error="false"
-              ></v-select>
-            </v-col>
-            <v-col class="d-flex" cols="12" sm="9">
-              <v-text-field v-model="mnt_lowerVal" :rules="[rules.mnt_lower]" label="mnt-lower"></v-text-field>
             </v-col>
           </v-row>
 
@@ -385,59 +476,19 @@
                 <v-btn @click="addAnotherIPAddress()" class="mx-2" small fab dark color="teal">
                   <v-icon dark>mdi-plus</v-icon>
                 </v-btn>
+                <v-btn
+                  @click="deleteIPAddress(index)"
+                  v-if="index > 0"
+                  class="mx-2"
+                  small
+                  fab
+                  dark
+                  color="red"
+                >
+                  <v-icon dark>delete</v-icon>
+                </v-btn>
               </v-col>
             </template>
-          </v-row>
-
-          <v-row>
-            <v-col class="d-flex" cols="12" sm="3">
-              <v-select
-                small-chips
-                :items="reserved_words"
-                v-model="mnt_by_reserved"
-                :rules="[rules.required]"
-                label="Reserved Names"
-                required
-              ></v-select>
-            </v-col>
-            <v-col class="d-flex" cols="12" sm="9">
-              <v-text-field
-                v-model="mnt_byVal"
-                :rules="[rules.required,rules.mnt_lower]"
-                label="mnt-by"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12" sm="8">
-              <v-text-field v-model="changedEmail" :rules="[rules.notify]" label="Changed"></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="4">
-              <v-dialog
-                ref="dialog"
-                v-model="modal"
-                :return-value.sync="date"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="date"
-                    label="Picker in dialog"
-                    prepend-icon="event"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="date" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
-                  <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-col>
           </v-row>
 
           <v-btn :disabled="!valid" color="success" class="mr-4 my-2" @click="validate">Submit Form</v-btn>
@@ -664,6 +715,9 @@ export default {
         action: "",
         count: ++this.count
       });
+      this.snackbar = true;
+      this.snackbarText = "row added";
+      this.snackbarColor = "info";
     },
     deleteExportPeering(index) {
       this.formVal.export.export_peering.splice(
@@ -677,6 +731,9 @@ export default {
         action: "",
         count: ++this.count
       });
+      this.snackbar = true;
+      this.snackbarText = "row added";
+      this.snackbarColor = "info";
     },
     deleteImportPeering(index) {
       this.formVal.import.import_peering.splice(
@@ -694,29 +751,52 @@ export default {
       this.snackbarText = "row added";
       this.snackbarColor = "info";
     },
+    delete_mp_ImportPeering(index) {
+      this.formVal.mp_import.mp_import_peering.splice(
+        this.formVal.mp_import.mp_import_peering.indexOf(index),
+        1
+      );
+    },
     addAnother_mp_ExportPeering() {
       this.formVal.mp_export.mp_export_peering.push({
         peering: "",
         action: "",
         count: ++this.count
       });
+      this.snackbar = true;
+      this.snackbarText = "row added";
+      this.snackbarColor = "info";
+    },
+    delete_mp_ExportPeering(index) {
+      this.formVal.mp_export.mp_export_peering.splice(
+        this.formVal.mp_export.mp_export_peering.indexOf(index),
+        1
+      );
     },
     addAnotherIPAddress() {
       this.formVal.mnt_routes.ip_address.push({
         ip: "",
         prefix: "ANY"
       });
+      this.snackbar = true;
+      this.snackbarText = "row added";
+      this.snackbarColor = "info";
+    },
+    deleteIPAddress(index) {
+      this.formVal.mnt_routes.ip_address.splice(
+        this.formVal.mnt_routes.ip_address.indexOf(index),
+        1
+      );
     },
     validate() {
-      this.responseDialog = true;
-      this.formVal.as_name = this.as_name_reserved + this.as_nameVal;
-      this.formVal.mnt_lower = this.mnt_reserved + this.mnt_lowerVal;
-      this.formVal.mnt_by = this.mnt_by_reserved + this.mnt_byVal;
-      this.formVal.status = this.statusComputed;
-      this.formVal.changed = this.changedEmail + " " + this.formatDate;
-
       if (this.$refs.form.validate()) {
         this.formVal.aut_num = "AS" + this.aut_num;
+        this.responseDialog = true;
+        this.formVal.as_name = this.as_name_reserved + this.as_nameVal;
+        this.formVal.mnt_lower = this.mnt_reserved + this.mnt_lowerVal;
+        this.formVal.mnt_by = this.mnt_by_reserved + this.mnt_byVal;
+        this.formVal.status = this.statusComputed;
+        this.formVal.changed = this.changedEmail + " " + this.formatDate;
         console.log(this.formVal);
       }
     },
