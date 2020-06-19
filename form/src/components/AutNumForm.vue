@@ -48,10 +48,19 @@
 
           <v-row>
             <v-col cols="12" sm="6">
-              <v-text-field label="admin-c"></v-text-field>
+              <v-text-field
+                v-model="formVal.admin_c"
+                :rules="[rules.required, rules.tech_c]"
+                label="admin-c"
+              ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6">
-              <v-text-field label="tech-c" required></v-text-field>
+              <v-text-field
+                v-model="formVal.tech_c"
+                :rules="[rules.required, rules.tech_c]"
+                label="tech-c"
+                required
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -186,6 +195,13 @@ export default {
       remarks: v => {
         const pattern = /^[\x00-\x7F]*$/;
         return pattern.test(v) || "Should be only ASCII characters";
+      },
+      tech_c: v => {
+        const pattern = /^[a-zA-Z]{2,4}((?!(0))[0-9]{1,5})-[a-zA-Z]{1,9}$/;
+        return (
+          pattern.test(v) ||
+          "From 2 to 4 characters optionally followed by up to 5 digits(First digit must not be 0) and starts with - followed by source name up to 9-character length."
+        );
       }
     }
   }),
