@@ -56,6 +56,32 @@
           </v-row>
 
           <v-row>
+            <v-col sm="6" cols="12">
+              <v-text-field
+                v-model="formVal.descr"
+                :rules="[rules.required,rules.remarks]"
+                label="descr"
+              ></v-text-field>
+            </v-col>
+            <v-col sm="6" cols="12">
+              <v-slider
+                v-model="statusIndex"
+                :tick-labels="statusArr"
+                thumb-label="always"
+                min="0"
+                max="2"
+                ticks="always"
+                tick-size="4"
+                color="teal"
+              >
+                <template v-slot:thumb-label>
+                  <v-icon dark>place</v-icon>
+                </template>
+              </v-slider>
+            </v-col>
+          </v-row>
+
+          <v-row>
             <v-col class="d-flex" cols="12" sm="3">
               <v-select
                 small-chips
@@ -106,18 +132,23 @@ export default {
   data: () => ({
     valid: true,
     aut_num: "",
+    statusVal: "",
+    statusIndex: "",
     formVal: {
       aut_num: "",
+      descr: "",
       as_name: "",
       mnt_lower: "",
       mnt_by: "",
       mnt_irt: "",
       org: "",
-      notify: ""
+      notify: "",
+      status: ""
     },
     as_name_reserved: "",
     mnt_reserved: "",
     mnt_by_reserved: "",
+    statusArr: ["o ASSIGNED", "o ASSIGNED-ANYCAST", "o POLICY-RESERVED"],
     as_nameVal: "",
     mnt_lowerVal: "",
     mnt_byVal: "",
@@ -158,6 +189,23 @@ export default {
       }
     }
   }),
+
+  statusComputed() {
+    let index = this.statusIndex;
+    let statusVal = this.statusVal;
+    switch (index) {
+      case 0:
+        statusVal = "o ASSIGNED";
+        break;
+      case 1:
+        statusVal = "o ASSIGNED-ANYCAST";
+        break;
+      case 2:
+        statusVal = "o POLICY-RESERVED";
+        break;
+    }
+    return statusVal;
+  },
 
   methods: {
     validate() {
