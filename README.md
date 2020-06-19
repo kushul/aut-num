@@ -2,12 +2,12 @@
 Create an AUT-NUM form for AFRINIC
 
 # GIT
-```
+```diff
 git checkout develop
 ```
 
 # SETUP VUE
-```
+```diff
 cd aut-num/form
 npm install
 npm run serve
